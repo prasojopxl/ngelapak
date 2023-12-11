@@ -9,3 +9,7 @@
 .wrapper {
   @apply max-w-7xl mx-auto px-4
 }
+
+.bggradient {
+  @apply bg-gradient-to-br from-c-red to-c-red2
+}

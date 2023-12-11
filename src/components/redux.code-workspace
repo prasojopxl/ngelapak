@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "../../../redux"
+		},
+		{
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"workbench.colorCustomizations": {
+			"editorLineNumber.foreground": "#7b7c7b",
+			"editor.selectionBackground": "#7b7c7b",
+			"editorIndentGuide.activeBackground": "#79ba8a",
+			"editorIndentGuide.background": "#5c5c5d"
+		},
+		"files.autoSave": "afterDelay"
+	}
+}
