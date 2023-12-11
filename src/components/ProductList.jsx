@@ -35,8 +35,6 @@ export default function ProductList() {
         let getUniq = _.uniqBy(getData, "category")
         return _.map(getUniq, "category")
     }
-
-
     return (
         <>
             {

@@ -4,8 +4,12 @@ import { selectCartTotalItems } from "../redux/cartSlice";
 import { useDispatch } from "react-redux";
 import { searchProduct } from "../redux/productSlice";
 import { motion } from "framer-motion"
+import { useState } from "react";
+import { createPortal } from 'react-dom';
+import Modal from "./Modal";
 
 export default function Header() {
+    const [showModal, setShowModal] = useState(false);
     const cartItem = useSelector(selectCartTotalItems)
     const dispatch = useDispatch()
 
@@ -15,6 +19,13 @@ export default function Header() {
 
     return (
         <div className="bggradient text-blue-50">
+            {
+                showModal ? createPortal(
+                    <Modal onClose={() => setShowModal(false)} />,
+                    document.body
+                ) : null
+            }
+
             <div className="wrapper flex justify-between py-4 items-center gap-2">
                 <motion.div
                     animate={{
@@ -34,14 +45,15 @@ export default function Header() {
                     onChange={(e) => getSearch(e.target.value)}
                 />
                 <motion.div
-                    className="relative cursor-pointer
-
-                ">
+                    className="relative cursor-pointer"
+                    onClick={() => setShowModal(true)}
+                >
                     <img src={cartImage} width={20} alt="cart" />
                     {
                         cartItem > 0 ? <span className="absolute flex items-center justify-center w-[17px] h-[17px] top-[-10px] left-[-7px] bg-red-500 text-white px-1 rounded-full text-[8px] border ">{cartItem}</span> : null
                     }
                 </motion.div>
+
             </div>
         </div >
     )
