@@ -2,7 +2,6 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit"
 import { fetchData } from "../utils/services"
 import _ from "lodash"
 
-export const getDataAll = await fetchData("/products")
 export const getData= createAsyncThunk("products/fetchData", async()=> {
     const response = await fetchData("/products")
     return response
@@ -11,6 +10,7 @@ export const getData= createAsyncThunk("products/fetchData", async()=> {
 const initialState = {
     isLoading:false,
     isError:null,
+    productFull:[],
     productItems: [],
 }
 
@@ -40,10 +40,10 @@ export const productSlice = createSlice({
         filterProduct: (state, action)=> {
             const category = action.payload
             if(category === "All") {
-                state.productItems = getDataAll
+                state.productItems = state.productFull
             }
             if(category !== "All") {
-                state.productItems = _.filter(getDataAll, (item) => {
+                state.productItems = _.filter(state.productFull, (item) => {
                     if (category === "All") {
                         return item
                     } else {
@@ -55,10 +55,10 @@ export const productSlice = createSlice({
         searchProduct: (state, action)=> {
             const searchValue = action.payload
             if(searchValue === "") {
-                state.productItems = getDataAll
+                state.productItems = state.productFull
             }
             if(searchValue !== "") {
-                state.productItems = _.filter(getDataAll, (item) => {
+                state.productItems = _.filter(state.productFull, (item) => {
                     if (searchValue === "") {
                         return item
                     } else {
@@ -76,6 +76,7 @@ export const productSlice = createSlice({
             .addCase(getData.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.productItems = action.payload;
+                state.productFull = action.payload;
             })
             .addCase(getData.rejected, (state, action) => {
                 state.isLoading = false;

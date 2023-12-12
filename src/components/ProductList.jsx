@@ -5,7 +5,7 @@ import { cartSelector, productSelector } from "../utils/var";
 import _ from "lodash"
 import { FaRegStar } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
-import { sortProduct, filterProduct, getData, productInfo, getDataAll } from "../redux/productSlice";
+import { sortProduct, filterProduct, getData, productInfo } from "../redux/productSlice";
 import { motion } from "framer-motion"
 import { useEffect } from "react";
 
@@ -15,6 +15,7 @@ export default function ProductList() {
     const listProd = useSelector(productSelector)
     const dispatch = useDispatch()
     const isLoading = useSelector((state) => state.product.isLoading);
+    const allProd = useSelector((state) => state.product.productFull);
 
     const addProduct = (products) => {
         dispatch(addCartItem(products))
@@ -31,7 +32,7 @@ export default function ProductList() {
         dispatch(getData(productInfo))
     }
     const listCategory = () => {
-        let getUniq = _.uniqBy(getDataAll, "category")
+        let getUniq = _.uniqBy(allProd, "category")
         return _.map(getUniq, "category")
     }
 
