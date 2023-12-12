@@ -1,11 +1,17 @@
-import {createSlice} from "@reduxjs/toolkit"
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit"
 import { fetchData } from "../utils/services"
 import _ from "lodash"
 
-export const getData = await fetchData("/products")
+export const getDataAll = await fetchData("/products")
+export const getData= createAsyncThunk("products/fetchData", async()=> {
+    const response = await fetchData("/products")
+    return response
+} )
 
 const initialState = {
-    productItems: getData
+    isLoading:false,
+    isError:null,
+    productItems: [],
 }
 
 export const productSlice = createSlice({
@@ -13,7 +19,8 @@ export const productSlice = createSlice({
     initialState,
     reducers:{
         productInfo: (state,action)=> {
-            console.log(action.payload);
+            state.productItems = action.payload;
+            state.isLoading = true;
         },
         sortProduct: (state, action)=> {
             const sortValue = action.payload
@@ -33,10 +40,10 @@ export const productSlice = createSlice({
         filterProduct: (state, action)=> {
             const category = action.payload
             if(category === "All") {
-                state.productItems = getData
+                state.productItems = getDataAll
             }
             if(category !== "All") {
-                state.productItems = _.filter(getData, (item) => {
+                state.productItems = _.filter(getDataAll, (item) => {
                     if (category === "All") {
                         return item
                     } else {
@@ -44,18 +51,37 @@ export const productSlice = createSlice({
                     }
                 })
             }
-        },
+        }, 
         searchProduct: (state, action)=> {
             const searchValue = action.payload
-            state.productItems = _.filter(getData, (item) => {
-                if (searchValue === "") {
-                    return item
-                } else {
-                    return item.title.toLowerCase().includes(searchValue.toLowerCase())
-                }
-            })
+            if(searchValue === "") {
+                state.productItems = getDataAll
+            }
+            if(searchValue !== "") {
+                state.productItems = _.filter(getDataAll, (item) => {
+                    if (searchValue === "") {
+                        return item
+                    } else {
+                        return item.title.toLowerCase().includes(searchValue.toLowerCase())
+                    }
+                })
+            }
         }
-    }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getData.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getData.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.productItems = action.payload;
+            })
+            .addCase(getData.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = action.error;
+            });
+    },
 })
 
 export const {productInfo, sortProduct, filterProduct, searchProduct} = productSlice.actions

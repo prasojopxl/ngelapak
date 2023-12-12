@@ -5,15 +5,16 @@ import { cartSelector, productSelector } from "../utils/var";
 import _ from "lodash"
 import { FaRegStar } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
-import { sortProduct, filterProduct, getData } from "../redux/productSlice";
+import { sortProduct, filterProduct, getData, productInfo, getDataAll } from "../redux/productSlice";
 import { motion } from "framer-motion"
+import { useEffect } from "react";
 
 
 export default function ProductList() {
     const listCart = useSelector(cartSelector)
     const listProd = useSelector(productSelector)
     const dispatch = useDispatch()
-    const isLoading = useSelector((state) => state.isLoading);
+    const isLoading = useSelector((state) => state.product.isLoading);
 
     const addProduct = (products) => {
         dispatch(addCartItem(products))
@@ -26,15 +27,21 @@ export default function ProductList() {
     const getSortBy = (sortValue) => {
         dispatch(sortProduct(sortValue))
     }
+    const getInfo = () => {
+        dispatch(getData(productInfo))
+    }
+    const listCategory = () => {
+        let getUniq = _.uniqBy(getDataAll, "category")
+        return _.map(getUniq, "category")
+    }
 
     const getFilterBy = (filterValue) => {
         dispatch(filterProduct(filterValue))
     }
 
-    const listCategory = () => {
-        let getUniq = _.uniqBy(getData, "category")
-        return _.map(getUniq, "category")
-    }
+    useEffect(() => {
+        getInfo()
+    }, [])
     return (
         <>
             {
@@ -48,10 +55,7 @@ export default function ProductList() {
                         }}
                     >
                         <div className="w-[100px] h-[100px] bggradient flex justify-center items-center text-center text-white rounded-md">
-                            <div>
-                                <div>Nge</div>
-                                <div>Loading</div>
-                            </div>
+                            <div className="text-7xl font-black">N</div>
                         </div>
                     </motion.div >
                 </div> :
